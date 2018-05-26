@@ -1,7 +1,7 @@
 %doctype;
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <!-- $Id: updind.txt,v 5.14 2008-01-08 11:58:46 ddr Exp $ -->
+  <!-- $Id: updind.txt,v 5.14 2018-05-25 11:58:46 ddr Exp $ -->
   <!-- Copyright (c) 1998-2007 INRIA -->
   <meta name="robots" content="none"%/>
   <meta http-equiv="Content-Type" content="text/html; charset=%charset;"%/>
@@ -704,6 +704,9 @@ function changeCalendar(e,v,m,c) {
       <label><input type="radio" name="access"%sp;
        value="Private"%if;acc_private; checked="checked"%end;%/>
       [*private]0</label>
+      <label><input type="radio" name="access"%sp;
+       value="Friend"%if;acc_friend; checked="checked"%end;%/>
+      [*friend]0</label>
     </td>
   </tr>
 </table>
