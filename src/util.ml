@@ -530,11 +530,23 @@ value fast_auth_age conf p =
 ;
 
 value authorized_age conf base p =
+  do {
+  Printf.eprintf "Personne : %s, Statut : %s, Visiteur : %s\n"
+    ((sou base (get_first_name p)) ^ " " ^ (sou base (get_surname p)) ^ " (" ^ (string_of_int (get_occ p)) ^ ")")
+    (if get_access p = IfTitles then "IfTitles"
+    else if get_access p = Public then "Public" 
+    else if get_access p = Private then "Private" 
+    else if get_access p = Friend then "Friend"
+    else "None")
+    (if conf.wizard  then "Wizard"
+    else if conf.friend then "Friend" 
+    else "Visitor"); 
+  flush stderr;
   if conf.wizard || (conf.friend && get_access p = Friend) || get_access p = Public then True
   else if
     conf.public_if_titles && get_access p = IfTitles &&
     nobtit conf base p <> [] then
-    True
+    False
   else
     match
       (Adef.od_of_codate (get_birth p), Adef.od_of_codate (get_baptism p),
@@ -563,7 +575,7 @@ value authorized_age conf base p =
                 a.year > conf.private_years
             | _ -> loop (i + 1) ]
         in
-        loop 0 ]
+        loop 0 ]}
 ;
 
 value is_restricted (conf : config) base ip =
@@ -1708,7 +1720,7 @@ value parent conf base p a =
   match get_public_name a with
   [ n when sou base n <> "" -> sou base n ^ person_title conf base a
   | _ ->
-      if (is_hide_names conf p) && not (fast_auth_age conf a) then "x x"
+      if (is_hide_names conf p) && not (authorized_age conf base a) then "x x"
       else
         p_first_name base a ^
           (if not (eq_istr (get_surname p) (get_surname a)) then
@@ -1768,7 +1780,7 @@ value specify_homonymous conf base p =
               if Array.length ct > 0 then
                 let enfant = pget conf base ct.(0) in
                 let (child_fn, child_sn) =
-                  if (is_hide_names conf p) && not (fast_auth_age conf enfant) then
+                  if (is_hide_names conf p) && not (authorized_age conf base enfant) then
                     ("x", " x")
                   else
                     (p_first_name base enfant,

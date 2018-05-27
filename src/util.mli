@@ -53,6 +53,7 @@ value wprint_geneweb_link : config -> string -> string -> unit;
 
 value is_restricted : config -> base -> iper -> bool;
 value is_hidden : person -> bool;
+value is_hide_names : config -> person -> bool;
 
 value pget : config -> base -> iper -> person;
 
